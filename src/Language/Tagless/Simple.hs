@@ -6,6 +6,11 @@ import Language.Tagless.Common.Apply
 class Apply_ expr => Lambda_ expr where 
   lam :: (expr a -> expr b) -> expr (a -> b)
 
+lam2 :: Lambda_ expr => (expr a -> expr b -> expr c) -> expr (a -> b -> c)
+lam2 f = lam $ \x -> lam $ \y -> f x y
+
+lam3 :: Lambda_ expr => (expr a -> expr b -> expr c -> expr d) -> expr (a -> b -> c -> d)
+lam3 f = lam2 $ \x y -> lam $ \z -> f x y z
 
 infixr 9 .:
 (.:) :: Lambda_ expr

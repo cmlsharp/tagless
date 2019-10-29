@@ -15,35 +15,44 @@ import Language.Tagless.Common.Apply
 class (forall e . Apply_ (expr e)) => Lambda_ expr where 
 
   -- | Lambda abstraction
-  lamDB :: expr (e, a) b -> expr e (a -> b)
+  lamDB :: expr (e,a) b -> expr e (a -> b)
 
   -- | The zero'th (most-recently bound) variable
-  v0 :: expr (e, a) a
+  v0 :: expr (e,a) a
 
   -- | Extend environment.
-  weaken :: expr e a -> expr (e, x) a
+  weaken :: expr e a -> expr (e,x) a
 
 
 lam :: Lambda_ expr
   => (forall x. expr (e,a) a -> expr (e,a) b)
   -> expr e (a -> b)
-lam body = lamDB $ body v0
+lam f = lamDB $ f v0
 
 lam2 :: Lambda_ expr
   => (forall x y. expr ((e,x),y) a -> expr ((e,x),y) b -> expr ((e,x),y) c)
   -> expr e (a -> b -> c)
-lam2 body = lam $ \x -> lam $ \y -> body (var x) (var y)
+lam2 f = lam $ \x -> lam $ \y -> f (var x) (var y)
+
+lam3 :: Lambda_ expr
+  => (forall x y z. expr (((e,x),y),z) a -> expr (((e,x),y),z) b -> expr (((e,x),y),z) c -> expr (((e,x),y),z) d)
+  -> expr e (a -> b -> c -> d)
+lam3 f = lam2 $ \x y -> lam $ \z -> f (var x) (var y) (var z)
 
 lamM :: (Functor f, Lambda_ expr)
   => (forall x. expr (e,x) a -> f (expr (e,x) b))
   -> f (expr e (a -> b))
-lamM body = lamDB <$> body v0
+lamM f = lamDB <$> f v0
 
 lamM2 :: (Functor f, Lambda_ expr)
   => (forall x y. expr ((e,x),y) a -> expr ((e,x),y) b -> f (expr ((e,x),y) c))
   -> f (expr e (a -> b -> c))
-lamM2 body = lamM $ \x -> lamM $ \y -> body (var x) (var y)
+lamM2 f = lamM $ \x -> lamM $ \y -> f (var x) (var y)
 
+lamM3 :: (Functor f, Lambda_ expr)
+  => (forall x y z. expr (((e,x),y),z) a -> expr (((e,x),y),z) b -> expr (((e,x),y),z) c -> f (expr (((e,x),y),z) d))
+  -> f (expr e (a -> b -> c -> d))
+lamM3 f = lamM2 $ \x y -> lamM $ \z -> f (var x) (var y) (var z)
 
 infixr 9 .:
 (.:) :: Lambda_ expr
