@@ -1,0 +1,16 @@
+name: tagless
+version: 0.0.1
+synopsis: "tagless: a library to help write DSLs in the tagless-final style"
+github: crossroads1112/tagless
+author: Chad Sharp <cmlsharp@umich.edu>
+copyright: Chad Sharp
+category: Language
+stability: experimental
+description: TODO
+extra-source-files: README.md
+
+dependencies:
+  - base
+
+library:
+  source-dirs: src
