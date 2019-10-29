@@ -15,6 +15,10 @@ infixr 9 .:
 -- | Ordinary (non-strict) object-language function composition.
 f .: g = lam $ \x -> f $: (g $: x)
 
+-- for consistency with DeBruijn
+var :: expr a -> expr a
+var = id
+
 const_ :: Lambda_ expr => expr (a -> b -> a)
 const_ = lam $ \x -> lam $ \_ -> x
 

@@ -1,4 +1,4 @@
-module Crypto.Alchemy.Language.Pair where
+module Language.Tagless.Common.Pair where
 
 class Pair_ expr where
   pair_ :: expr (a -> b -> (a,b))

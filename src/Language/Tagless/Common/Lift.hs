@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module Language.Tagless.Common.Lift where
 
 class Lift_ expr a where
@@ -9,7 +11,5 @@ class Lift_ expr a where
 -- Pretty-printers / expression size counters screw it up
 
 instance (Lift_ expr a, List_ expr) => Lift_ expr [a] where
-  lift_ [] = nil_
-  lift_ (x: xs) = cons $: (lift_ x) $: lift_ xs
-
+  lift_ xs = map lift_ . foldr (\y ys -> cons $: y $: ys) xs nil_
 -}

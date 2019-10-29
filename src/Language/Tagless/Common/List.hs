@@ -1,4 +1,4 @@
-module Crypto.Alchemy.Language.List where
+module Language.Tagless.Common.List where
 
 -- | Symantics for list operations.
 
